@@ -3,6 +3,7 @@ import { PgAttribute } from "graphile-build-pg";
 import { isAuditedClass } from "./util";
 import { getOptions } from "./options";
 
+// NOTE(ncurbez): We do not use this plugin because our 'AuditId' is simply the id of the model
 export const OmitAuditIds: Plugin = builder => {
   builder.hook(
     "build",

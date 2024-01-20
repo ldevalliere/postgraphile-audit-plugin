@@ -5,7 +5,7 @@ import { OrderByAudit } from "./OrderByAudit";
 
 import { AdditionalInflectors, inflectors } from "./inflectors";
 import { AuditPluginOptions } from "./options";
-import { OmitAuditIds } from "./OmitAuditIds";
+// import { OmitAuditIds } from "./OmitAuditIds";
 import { UserNameField } from "./UserNameField";
 
 declare module "graphile-build" {
@@ -20,7 +20,7 @@ export {
   AdditionalInflectors,
   AddAuditedInterface,
   OrderByAudit,
-  OmitAuditIds,
+  // OmitAuditIds,
   UserNameField,
   inflectors as InflectorsPlugin,
 };
@@ -30,6 +30,6 @@ export default makePluginByCombiningPlugins(
   AddAuditFields,
   AddAuditedInterface,
   OrderByAudit,
-  OmitAuditIds,
+  // OmitAuditIds,
   UserNameField
 );

@@ -4,12 +4,6 @@ const additionalInflectors = {
   pap_AuditedInterface() {
     return "Audited";
   },
-  pap_createdAt() {
-    return "createdAt";
-  },
-  pap_createdBy() {
-    return "createdBy";
-  },
   pap_lastModifiedAt() {
     return "lastModifiedAt";
   },
@@ -26,7 +20,7 @@ const additionalInflectors = {
     return "auditEvents";
   },
   pap_usernameField() {
-    return "userName";
+    return "originatedByUserId";
   },
 };
 

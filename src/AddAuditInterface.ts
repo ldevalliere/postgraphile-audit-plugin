@@ -52,20 +52,17 @@ export const AddAuditedInterface: Plugin = builder => {
             }
 
             if (dateProps) {
-              fields[inflection.pap_createdAt()] = {
-                type: fieldTypeWrapper(getTypeByName("String")),
-              };
+              // NOTE: removed created at
               fields[inflection.pap_lastModifiedAt()] = {
                 type: fieldTypeWrapper(getTypeByName("String")),
               };
             }
 
             if (nameProps) {
-              fields[inflection.pap_createdBy()] = {
-                type: fieldTypeWrapper(getTypeByName("String")),
-              };
+              // NOTE: removed created by
               fields[inflection.pap_lastModifiedBy()] = {
-                type: fieldTypeWrapper(getTypeByName("String")),
+                // NOTE(ncurbez): null if it's 'unknown' or it's a system modification, so this is always optional
+                type: getTypeByName("UUID"),
               };
             }
 

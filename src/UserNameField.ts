@@ -39,7 +39,7 @@ const OmitOriginalUserNameField: Plugin = builder => {
 
     if (returnTypeClass) {
       returnTypeClass.attributes.find(
-        a => a.name === "user_name"
+        a => a.name === "originated_by_user_id"
       )!.tags.omit = true;
     }
 
@@ -48,7 +48,7 @@ const OmitOriginalUserNameField: Plugin = builder => {
 };
 
 const AddCorrectedNameField = makeExtendSchemaPlugin(build => {
-  const options = getOptions(build);
+  // const options = getOptions(build);
   const { returnTypeClass } = getAuditFunctionInfo(build);
 
   const returnTypeName: string = returnTypeClass
@@ -58,19 +58,18 @@ const AddCorrectedNameField = makeExtendSchemaPlugin(build => {
   const sql: PgSql2 = build.pgSql;
 
   function nameFragment(queryBuilder: QueryBuilder) {
-    return sql.fragment`COALESCE(${
-      options.nameSource === "user_name"
-        ? sql.fragment`${queryBuilder.getTableAlias()}.user_name`
-        : sql.fragment`${queryBuilder.getTableAlias()}."session_info"#>>${sql.value(
-            options.nameSessionInfoJsonPath
-          )}`
-    }, ${sql.value(options.nameFallback)})`;
+    return sql.fragment`
+      // NOTE(ncurbez): don't use the session_info option since the event already has the proper originated_by_user_id
+      // NOTE(ncurbez): revisit this - it's only safe to do this lookup if the user is never deleted
+      ${queryBuilder.getTableAlias()}.originated_by_user_id
+    `;
   }
 
+  // TODO(ncurbez): create another field originatedByUser that uses this id to find a User?
   return {
     typeDefs: gql`
   extend type ${returnTypeName} {
-     ${build.inflection.pap_usernameField()}: String! @pgQuery(
+     ${build.inflection.pap_usernameField()}: UUID @pgQuery(
       fragment: ${embed(nameFragment)})
   }
   `,
@@ -78,6 +77,8 @@ const AddCorrectedNameField = makeExtendSchemaPlugin(build => {
 });
 
 export const UserNameField = makePluginByCombiningPlugins(
+  // These two plugins effectively don't do anything since originated_by_user_id is returned as-is,
+  // but could become useful if we add `originatedByUser: User`
   OmitOriginalUserNameField,
   AddCorrectedNameField
 );

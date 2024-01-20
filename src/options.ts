@@ -8,7 +8,7 @@ export interface AuditPluginOptions {
   auditFunctionSchema: string;
 
   /**
-   * Name of the audit id column. Defaults to `pgmemento_audit_id`
+   * Name of the audit id column. Defaults to `id`
    */
   auditIdColumnName: string;
 
@@ -35,9 +35,9 @@ export interface AuditPluginOptions {
    */
   nameProps: boolean;
   /**
-   * define how "name" properties should be filled - either with the transaction's "user_name", or with a value from the "session_info" JSON
+   * define how "name" properties should be filled - either with the transaction's "originated_by_user_id", or with a value from the "session_info" JSON
    */
-  nameSource: "user_name" | "session_info";
+  nameSource: "originated_by_user_id" | "session_info";
 
   /**
    * if `nameSource` is "session_info", this describes the path to the username within the JSON
@@ -54,16 +54,16 @@ export function getOptions(build: Build): AuditPluginOptions {
   const options: Options = build.options;
   const {
     auditPlugin: {
-      auditFunctionSchema = "public",
-      auditIdColumnName = "pgmemento_audit_id",
+      auditFunctionSchema = "app_public",
+      auditIdColumnName = "id",
       auditEventConnection = true,
       auditEventFieldsAndConnectionOptional = false,
       firstLastAuditEvent = true,
       dateProps = true,
       nameProps = true,
-      nameSource = "user_name",
-      nameSessionInfoJsonPath = "{name}",
-      nameFallback = "unknown user",
+      nameSource = "originated_by_user_id", // only use "originated_by_user_id", don't use session_info in our app
+      nameSessionInfoJsonPath = "{name}", // code for this option has been removed
+      nameFallback = "unknown user", // we will just return null for the UUID, code for this option has been removed
     } = {},
   } = options;
   return {

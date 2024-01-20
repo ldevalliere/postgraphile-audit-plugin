@@ -7,7 +7,7 @@ import { getOptions } from "./options";
 type PgClass = import("graphile-build-pg").PgClass;
 type Inflection = import("graphile-build").Inflection;
 
-export const AddAuditFields = makeExtendSchemaPlugin((build, options) => {
+export const AddAuditFields = makeExtendSchemaPlugin((build, _options) => {
   const inflection: Inflection = build.inflection;
   const auditOptions = getOptions(build);
   const {
@@ -57,9 +57,6 @@ export const AddAuditFields = makeExtendSchemaPlugin((build, options) => {
     if (dateProps) {
       typeDefs.push(gql`
       extend type ${inflection.tableType(pgClass)} {
-        ${inflection.pap_createdAt()}: ${fieldTypeWrapper("String")} @pgQuery(
-            fragment: ${embed(queryForDate("first", auditOptions))}
-        )
         ${inflection.pap_lastModifiedAt()}: ${fieldTypeWrapper(
         "String"
       )} @pgQuery(
@@ -71,12 +68,7 @@ export const AddAuditFields = makeExtendSchemaPlugin((build, options) => {
     if (nameProps) {
       typeDefs.push(gql`
       extend type ${inflection.tableType(pgClass)} {
-        ${inflection.pap_createdBy()}: ${fieldTypeWrapper("String")} @pgQuery(
-            fragment: ${embed(queryForUser("first", auditOptions))}
-        )
-        ${inflection.pap_lastModifiedBy()}: ${fieldTypeWrapper(
-        "String"
-      )} @pgQuery(
+        ${inflection.pap_lastModifiedBy()}: ${"UUID"} @pgQuery(
             fragment: ${embed(queryForUser("last", auditOptions))}
         )
       }

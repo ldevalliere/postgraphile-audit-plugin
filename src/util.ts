@@ -11,7 +11,6 @@ export function isAuditedClass(
   return (
     !!pgEntity &&
     pgEntity.kind === "class" &&
-    pgEntity.namespaceName !== "pgmemento" &&
     !!pgEntity.namespace &&
     pgEntity.classKind === "r" &&
     pgEntity.attributes.some(
